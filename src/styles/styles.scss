@@ -1,0 +1,13 @@
+@import "nullstyle.scss";
+@import "page.scss";
+@import "usersList.scss";
+
+* {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+}
+h1 {
+  font-size: large;
+}

@@ -1,0 +1,21 @@
+.page {
+  height:100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  &__link{
+    padding:5px;
+    text-transform: uppercase;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    align-items:center;
+    a:visited {
+      color:black;
+    }
+  }
+}
+.form {
+
+}

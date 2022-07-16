@@ -1,0 +1,23 @@
+.users-list {
+  color: white;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  height: 70vh;
+  overflow-y: auto;
+  border: 1px solid gray;
+  border-radius: 25px;
+  padding: 10px;
+  box-sizing: border-box;
+  &__link {
+    padding-right: 15px;
+    justify-content: space-between;
+    background-color: #3318df99;
+    border-radius: 25px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+
+    display: flex;
+    align-items: center;
+  }
+}
