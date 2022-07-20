@@ -11,15 +11,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Avatar } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { removeUser } from "../../store/slices/userSlice";
 import { AppRoute } from '../../const';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
-import { deleteUser, getAuth } from 'firebase/auth';
-import { deleteDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
 
 interface Props {
   window?: () => Window;
@@ -28,13 +28,21 @@ interface Props {
 
 
 const drawerWidth = 240;
-const navItems = [{ link: 'Users', navLink: `${AppRoute.userList}` }, { link: 'Chat', navLink: `${AppRoute.chat}` }];
 
 export default memo(function Header(props: Props) {
-  const { firstName, secondName, ChatID } = useAuth();
+  const { firstName, secondName, ChatID, HeaderChat, nameFriend } = useAuth();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [nameHead, setNameHead] = useState<string>(`${secondName} ${firstName}`);
   const dispatch = useDispatch()
+  useEffect(() => {
+    if (HeaderChat !== "") {
+      setNameHead(`Chat with ${nameFriend}`)
+    } else {
+      setNameHead(`${secondName} ${firstName}`)
+    }
+  }, [HeaderChat])
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -50,10 +58,12 @@ export default memo(function Header(props: Props) {
   }
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}
+      style={{ height: "10vh" }}
+    >
       <Typography variant="h6" sx={{ my: 2 }}>
         <p style={{ textOverflow: "ellipsis" }}>
-          {secondName} {firstName}
+          {nameHead}
         </p>
       </Typography>
       <Divider />
@@ -89,7 +99,7 @@ export default memo(function Header(props: Props) {
   return (
     <>
       <AppBar component="nav"
-        style={{ backgroundColor: "#3318df99" }}
+        style={{ backgroundColor: "rgb(101 119 163)" }}
       >
         <Toolbar
           style={{ display: "flex", justifyContent: "space-between" }}
@@ -110,7 +120,7 @@ export default memo(function Header(props: Props) {
           >
             <Avatar />
             <p style={{ textOverflow: "ellipsis" }}>
-              {secondName} {firstName}
+              {nameHead}
             </p>
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>

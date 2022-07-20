@@ -7,6 +7,7 @@ const initialState = {
   id: null,
   ChatID: null,
   nameFriend: null,
+  HeaderChat: null,
 };
 
 const userSlice = createSlice({
@@ -25,6 +26,9 @@ const userSlice = createSlice({
     setFriendName(state, action) {
       state.nameFriend = action.payload.nameFriend
     },
+    setHeaderChat(state, action) {
+      state.HeaderChat = action.payload.HeaderChat;
+    },
     removeUser(state) {
       state.email = null;
       state.id = null;
@@ -32,9 +36,10 @@ const userSlice = createSlice({
       state.firstName = null;
       state.secondName = null;
       state.nameFriend = null;
+      state.HeaderChat = null;
     }
   }
 })
 
-export const { setUser, removeUser, SetChatID, setFriendName } = userSlice.actions;
+export const { setUser, removeUser, SetChatID, setFriendName, setHeaderChat } = userSlice.actions;
 export default userSlice.reducer;

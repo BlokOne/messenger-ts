@@ -3,9 +3,6 @@ import { AppRoute } from "../const"
 import SingUp from "../components/SingUp/SingUp"
 
 function RegistrationPage(): JSX.Element {
-  function handleClick() {
-    console.log('hi')
-  }
   return (
     <div className="page">
       <SingUp />

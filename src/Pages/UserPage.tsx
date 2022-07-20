@@ -1,12 +1,10 @@
 import { Grid } from "@mui/material"
-import { useState } from "react"
 import { Navigate } from "react-router-dom"
 import { AppRoute } from "../const"
 import { useAuth } from '../hooks/use-auth'
 
 function UserPage(): JSX.Element {
-  const [page, setPage] = useState('')
-  const { isAuth, email } = useAuth();
+  const { isAuth } = useAuth();
 
   return (
 

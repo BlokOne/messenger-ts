@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/use-auth'
 
 
 function HomePage(): JSX.Element {
-  const { isAuth, email } = useAuth();
+  const { isAuth } = useAuth();
 
 
   return (

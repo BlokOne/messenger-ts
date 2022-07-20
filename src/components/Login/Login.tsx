@@ -1,10 +1,8 @@
 import { useDispatch } from "react-redux"
-import { browserLocalPersistence, getAuth, setPersistence, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Form from "../Form/Form";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../../store/slices/userSlice";
-import { SyntheticEvent, useState } from "react";
-import { useForm } from "react-hook-form";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { AppRoute } from "../../const";
@@ -27,14 +25,13 @@ async function getUserInfo(data: any) {
 }
 
 function Login(): JSX.Element {
-  const [clear, useClear] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
   getAuth().onAuthStateChanged(function (user) {
     if (user) {
       getUserInfo(user).then((userInfo: any) => {
-        const { firstName, secondName, email, password } = userInfo;
+        const { firstName, secondName } = userInfo;
         dispatch(setUser({
           email: user.email,
           id: user.uid,
@@ -52,7 +49,7 @@ function Login(): JSX.Element {
     signInWithEmailAndPassword(auth, email, password)
       .then(({ user }) => {
         getUserInfo(user).then((userInfo: any) => {
-          const { firstName, secondName, email, password } = userInfo;
+          const { firstName, secondName } = userInfo;
           dispatch(setUser({
             email: user.email,
             id: user.uid,

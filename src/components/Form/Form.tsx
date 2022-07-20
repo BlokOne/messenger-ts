@@ -1,7 +1,5 @@
 
-import { RssFeed, ViewColumn } from "@mui/icons-material";
-import { Button, FormControl, Grid, Input, TextField } from "@mui/material";
-import { useEffect, useState } from "react"
+import { Grid, Input, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 interface FormProps {
@@ -10,26 +8,15 @@ interface FormProps {
   login: boolean,
 
 }
-type FormInputs = {
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-};
 function Form({ title, handleClick, login, }: FormProps): JSX.Element {
-  const [disabled, setDisabled] = useState(true);
   const {
     register,
     formState: { errors, isValid },
     handleSubmit,
-    reset
   } = useForm({
     mode: "onChange"
   })
 
-  function clearForm() {
-    reset()
-  }
 
   return (
     <div>

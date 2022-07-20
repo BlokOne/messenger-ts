@@ -5,8 +5,6 @@ import { setUser } from "../../store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useState } from "react";
-import { Password } from "@mui/icons-material";
 import { AppRoute } from "../../const";
 
 type RegisterProps = {
@@ -27,7 +25,6 @@ function addUser(email: string | null, id: string | null, firstName: string, sec
 }
 
 function SingUp(): JSX.Element {
-  const [reset, useReset] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()
   function handleRegister(data: RegisterProps) {

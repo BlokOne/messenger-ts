@@ -5,14 +5,18 @@ import User from "../User/User";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useAuth } from '../../hooks/use-auth'
-import { isatty } from "tty";
 import { Navigate } from "react-router-dom";
 import { AppRoute } from "../../const";
+import { useDispatch } from "react-redux";
+import { setHeaderChat } from "../../store/slices/userSlice";
 
 
 const q = query(collection(db, "Users"), orderBy("secondName"));
 let users: any = [];
+/* eslint-disable */
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
+
+  /* eslint-enable */
   const newUsers: any = [];
   querySnapshot.forEach((doc) => {
     newUsers.push(doc.data());
@@ -27,13 +31,17 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
 
 
 
-
 function UserList() {
   const [navChat, setNavChat] = useState(false);
   const { isAuth, email } = useAuth();
   const [usersList, setUsersList] = useState<any[]>([]);
   const [sortKey, setSortKey] = useState<string>('');
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setHeaderChat({
+      HeaderChat: ""
+    }))
+  })
 
   useEffect(() => {
     if (sortKey === "") {
@@ -41,7 +49,7 @@ function UserList() {
     }
     else {
       let sortUsers: any[] = [];
-      users.filter((user: any) => {
+      users.forEach((user: any) => {
         const fullName = user.firstName + " " + user.secondName;
         if (fullName.indexOf(sortKey) > -1) {
           sortUsers.push(user)
@@ -79,11 +87,7 @@ function UserList() {
                 className="users-list"
               >
                 {
-                  usersList.map((user) => {
-                    if (email !== user.email) {
-                      return <User key={user.id} firstName={user.firstName} secondName={user.secondName} userId={user.id} setNavChat={setNavChat} />
-                    }
-                  })
+                  usersList.map((user) => email !== user.email ? <User key={user.id} firstName={user.firstName} secondName={user.secondName} userId={user.id} setNavChat={setNavChat} /> : null)
                 }
               </div>
             </Grid>
@@ -94,5 +98,6 @@ function UserList() {
     </>
   )
 }
+
 
 export default UserList

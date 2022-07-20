@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import UserList from "./components/User-List/UserList";
 import { AppRoute } from "./const";
 import ChatPage from "./Pages/ChatPage";
@@ -8,13 +8,9 @@ import RegistrationPage from "./Pages/RegistrationPage";
 import UserPage from "./Pages/UserPage";
 import { useAuth } from "../src/hooks/use-auth"
 import Header from "./components/Header/Header";
-import { browserLocalPersistence, getAuth, setPersistence, signInWithEmailAndPassword } from "firebase/auth";
-import { setUser } from "./store/slices/userSlice";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
 
 function App(): JSX.Element {
-  const { isAuth, email } = useAuth();
+  const { isAuth } = useAuth();
   return (
     <>{
       isAuth ?

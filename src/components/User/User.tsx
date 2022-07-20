@@ -22,7 +22,7 @@ function User(props: UserProps): JSX.Element {
   const { id } = useAuth();
   const [IdChat, setIdChat] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const [NameFriend, setNameFriend] = useState(firstName)
+  const [NameFriend] = useState(firstName)
 
 
 

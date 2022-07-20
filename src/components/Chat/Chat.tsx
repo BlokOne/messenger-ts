@@ -1,10 +1,36 @@
 
-import { Button, Container, Grid, TextField } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Container, Grid } from "@mui/material";
+import _ from "lodash";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import CreateMessage from "../CreateMessage/CreateMessage";
-
 import Message from "../Message/Message";
+/* eslint-disable */
+function sendNotification(title: string, options: any) {
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    if (!("Notification" in window)) {
+      alert('Ваш браузер не поддерживает HTML Notifications, его необходимо обновить.');
+    }
+    else if (Notification.permission === "granted") {
+      var notification = new Notification(title, options);
+    }
+    else if (Notification.permission !== 'denied') {
+      Notification.requestPermission(function (permission) {
+
+        if (permission === "granted") {
+          var notification = new Notification(title, options);
+
+        } else {
+          alert('Вы запретили показывать уведомления');
+        }
+      });
+    } else {
+
+    }
+  }
+
+}
+/* eslint-enable */
 
 type ChatProps = {
   messagesList: any[]
@@ -12,45 +38,54 @@ type ChatProps = {
 
 function Chat(props: ChatProps) {
   const { messagesList } = props;
-  const { nameFriend } = useAuth();
+  const { nameFriend, email } = useAuth();
   const divRef = useRef<null | HTMLDivElement>(null)
+  const [newMessagesList, setNewMessagesList] = useState<any[]>([])
+  const [check, setCheck] = useState(false)
+  useEffect(() => {
+    if (!(_.isEqual(messagesList, newMessagesList)) && newMessagesList.length) {
+      const { text, name } = messagesList[messagesList.length - 1];
+      if (name !== email) {
+        sendNotification(`New Message from ${nameFriend} `, {
+          body: `${text}`,
+          dir: 'auto'
+        });
+      }
+      setCheck(!check)
+    }
+    setNewMessagesList(messagesList)
+  }, [messagesList])
   useEffect(() => {
     divRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messagesList])
   return (
-    < Container>
+    < div
+      className="chat">
+
       <div
-        style={{ display: "flex", justifyContent: "space-between" }}
       >
         <Grid container
-          style={{ marginTop: "80px" }}
-          justifyItems={"center"}
-          justifyContent={"space-between"}
-          rowGap={"15px"}
+          className="chat__wrapper"
         >
-          <h2>
-            Chat with {nameFriend}
-          </h2>
           <div
-            style={
-              {
-                width: "95%",
-                height: "50vh",
-                border: '1px solid gray',
-                overflowY: 'auto',
-                overflowX: "hidden",
-                padding: "10px",
-                borderRadius: "5px"
-              }
-            }
+            className="chat__window"
           >
-            {messagesList.map((value) => <Message key={value.createAt.nanoseconds} value={value} />)}
+            <div
+              className="chat__messages"
+            >
+              {messagesList.map((value, index) => <Message key={index} value={value} time={!!value.createAt ?
+                value.createAt.seconds
+                :
+                "Now"
+              } />)}
+            </div>
+
             <div ref={divRef} />
           </div>
           <CreateMessage />
         </Grid>
       </div>
-    </Container>
+    </div>
   )
 }
 

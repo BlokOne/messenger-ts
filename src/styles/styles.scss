@@ -1,7 +1,7 @@
 @import "nullstyle.scss";
 @import "page.scss";
 @import "usersList.scss";
-
+@import "chat.scss";
 * {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   ::-webkit-scrollbar {
@@ -10,4 +10,7 @@
 }
 h1 {
   font-size: large;
+}
+body {
+  overflow: hidden;
 }
