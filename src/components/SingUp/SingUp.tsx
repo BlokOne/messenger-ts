@@ -5,30 +5,45 @@ import { setUser } from "../../store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { useState } from "react";
+import { Password } from "@mui/icons-material";
+import { AppRoute } from "../../const";
 
+type RegisterProps = {
+  firstName: string;
+  secondName: string;
+  email: string;
+  password: string
+};
 
-function addUser(name: any, id: string) {
-  const newUser = doc(db, 'Users', `${name}`);
+function addUser(email: string | null, id: string | null, firstName: string, secondName: string) {
+  const newUser = doc(db, 'Users', `${email}`);
   setDoc(newUser, {
-    name: name,
+    firstName: firstName,
+    secondName: secondName,
     id: id,
+    email: email,
   }, { merge: true });
 }
 
 function SingUp(): JSX.Element {
+  const [reset, useReset] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate()
-  function handleRegister(email: string, password: string) {
+  function handleRegister(data: RegisterProps) {
+    const { firstName, secondName, email, password } = data;
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then(({ user }) => {
         dispatch(setUser({
           email: user.email,
           id: user.uid,
+          firstName: firstName,
+          secondName: secondName,
         }
         ))
-        addUser(user.email, user.uid)
-        navigate('/')
+        addUser(user.email, user.uid, firstName, secondName)
+        navigate(`${AppRoute.chat}`)
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -38,7 +53,7 @@ function SingUp(): JSX.Element {
       });
   }
   return (
-    <Form title={"Registration"} handleClick={handleRegister} />
+    <Form title={"Registration"} handleClick={handleRegister} login={false} />
   )
 }
 

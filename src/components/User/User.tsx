@@ -5,23 +5,27 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { SetChatID } from "../../store/slices/userSlice";
-import { Navigate } from "react-router-dom";
-import { AppRoute } from "../../const";
+import { SetChatID, setFriendName } from "../../store/slices/userSlice";
+
 
 type UserProps = {
   userId: string,
-  name: string,
+  firstName: string,
+  secondName: string,
   setNavChat: Function
 }
 
 
 
 function User(props: UserProps): JSX.Element {
-  const { userId, name, setNavChat } = props;
-  const { isAuth, id } = useAuth();
-  const [IdChat, setIdChat] = useState<string>("");
+  const { userId, secondName, firstName, setNavChat } = props;
+  const { id } = useAuth();
+  const [IdChat, setIdChat] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [NameFriend, setNameFriend] = useState(firstName)
+
+
+
   const createChat = async function (myId: string, userId: string): Promise<any> {
     const arrayID = [userId, myId];
     arrayID.sort();
@@ -37,15 +41,17 @@ function User(props: UserProps): JSX.Element {
       }, { merge: true });
       setIdChat(id)
     }
+
   }
 
   useEffect(() => {
-    console.log('start')
     setNavChat(false)
-    console.log(IdChat)
-    if (IdChat !== "") {
+    if (IdChat) {
       dispatch(SetChatID({
-        ChatID: IdChat
+        ChatID: IdChat,
+      }))
+      dispatch(setFriendName({
+        nameFriend: NameFriend
       }))
       setNavChat(true)
     }
@@ -63,14 +69,14 @@ function User(props: UserProps): JSX.Element {
             marginRight: 10,
           }}
         />
-        <p>{name}</p>
+        <p>{secondName} {firstName}</p>
       </div>
       <Button
         variant="text" endIcon={<SendIcon />}
         style={{ color: "white" }}
         onClick={() => createChat(id, userId)}
       >
-        Start Chat
+        Chat
       </Button>
     </div >
 

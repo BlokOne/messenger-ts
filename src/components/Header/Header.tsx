@@ -18,6 +18,8 @@ import { removeUser } from "../../store/slices/userSlice";
 import { AppRoute } from '../../const';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
+import { deleteUser, getAuth } from 'firebase/auth';
+import { deleteDoc } from 'firebase/firestore';
 
 interface Props {
   window?: () => Window;
@@ -29,7 +31,7 @@ const drawerWidth = 240;
 const navItems = [{ link: 'Users', navLink: `${AppRoute.userList}` }, { link: 'Chat', navLink: `${AppRoute.chat}` }];
 
 export default memo(function Header(props: Props) {
-  const { email } = useAuth();
+  const { firstName, secondName, ChatID } = useAuth();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const dispatch = useDispatch()
@@ -37,32 +39,44 @@ export default memo(function Header(props: Props) {
     setMobileOpen(!mobileOpen);
   };
 
+  function exit() {
+    getAuth().signOut().then(function () {
+      dispatch(removeUser());
+    }, function (error) {
+      console.error('Sign Out Error', error);
+    });
+
+
+  }
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
         <p style={{ textOverflow: "ellipsis" }}>
-          {email}
+          {secondName} {firstName}
         </p>
       </Typography>
       <Divider />
       <List>
-        {navItems.map((value, index, array) => {
-          const { link, navLink } = value;
-          return (
-            <Link key={link} to={navLink}>
-              <ListItem disablePadding>
-                <ListItemButton sx={{ textAlign: 'center' }}>
-                  <ListItemText primary={link} />
-                </ListItemButton>
-              </ListItem>
-            </Link>
-
-          )
-        })}
+        <Link to={AppRoute.userList}>
+          <ListItem disablePadding>
+            <ListItemButton sx={{ textAlign: 'center' }}>
+              <ListItemText primary='Users' />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link to={AppRoute.chat} >
+          <ListItem disablePadding
+            disabled={!ChatID}>
+            <ListItemButton sx={{ textAlign: 'center' }}>
+              <ListItemText primary='Chat' />
+            </ListItemButton>
+          </ListItem>
+        </Link>
         <Button
           variant="text"
           style={{ color: "black" }}
-          onClick={() => dispatch(removeUser())}
+          onClick={exit}
         >
           Sing Out
         </Button>
@@ -96,27 +110,27 @@ export default memo(function Header(props: Props) {
           >
             <Avatar />
             <p style={{ textOverflow: "ellipsis" }}>
-              {email}
+              {secondName} {firstName}
             </p>
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((value) => {
-              const { link, navLink } = value;
-              return (
-                <Link to={navLink} key={link}>
-                  <Button sx={{ color: '#fff' }}>
-                    {link}
-                  </Button>
-                </Link>
-
-              )
-
-            })}
+            <Link to={AppRoute.userList} >
+              <Button sx={{ color: '#fff' }}>
+                Users
+              </Button>
+            </Link>
+            <Link to={AppRoute.chat} >
+              <Button sx={{ color: '#fff' }}
+                disabled={!ChatID}
+              >
+                Chat
+              </Button>
+            </Link>
           </Box>
           <Button
             variant="text"
             style={{ color: "white" }}
-            onClick={() => dispatch(removeUser())}
+            onClick={exit}
           >
             Sing Out
           </Button>

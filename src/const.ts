@@ -3,7 +3,7 @@ export enum AppRoute {
   login = "/login",
   registration = "/registration",
   chat = "/chat",
-  home = "/",
+  home = "/messenger-ts",
   userPage = '/user',
   userList = "/users"
 }

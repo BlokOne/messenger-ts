@@ -1,21 +1,27 @@
 .page {
-  height:100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  &__link{
-    padding:5px;
+  &__link {
+    padding: 5px;
     text-transform: uppercase;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    align-items:center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
     a:visited {
-      color:black;
+      color: black;
     }
   }
 }
-.form {
-
+.submit-form {
+  input {
+    cursor: pointer;
+  }
+  margin-bottom: 10px;
+  border: 0px solid transparent;
+  border-radius: 5px;
+  box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.6);
 }

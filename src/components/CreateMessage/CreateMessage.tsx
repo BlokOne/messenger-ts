@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { useAuth } from "../../hooks/use-auth";
 
@@ -9,8 +9,8 @@ function CreateMessage() {
   const [value, setValue] = useState<string>("");
   const { email, ChatID } = useAuth();
   const sendMessage = () => {
-    console.log('1')
-    if (value !== "") {
+    const userText = value.replace(/^\s+/, '').replace(/\s+$/, '');
+    if (userText !== '') {
       const newMassage = doc(db, `${ChatID}`, `${Date.now()}${email}`);
       setDoc(newMassage, {
         name: `${email}`,
@@ -20,6 +20,20 @@ function CreateMessage() {
       setValue("")
     }
   }
+  useEffect(() => {
+    function onKeypress(e: any) {
+      console.log(e.code)
+      if (value && e.code === "Enter") {
+        sendMessage()
+      }
+    }
+
+    document.addEventListener('keypress', onKeypress);
+
+    return () => {
+      document.removeEventListener('keypress', onKeypress);
+    };
+  });
   return (
     <Grid container
       direction={"column"}

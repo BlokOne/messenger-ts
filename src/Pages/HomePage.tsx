@@ -2,8 +2,11 @@ import { Navigate } from "react-router-dom"
 import { AppRoute } from "../const"
 import { useAuth } from '../hooks/use-auth'
 
+
 function HomePage(): JSX.Element {
   const { isAuth, email } = useAuth();
+
+
   return (
     <>
       {

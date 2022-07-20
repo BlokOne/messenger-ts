@@ -1,6 +1,7 @@
 
 import { Button, Container, Grid, TextField } from "@mui/material";
 import { useEffect, useRef } from "react";
+import { useAuth } from "../../hooks/use-auth";
 import CreateMessage from "../CreateMessage/CreateMessage";
 
 import Message from "../Message/Message";
@@ -11,13 +12,11 @@ type ChatProps = {
 
 function Chat(props: ChatProps) {
   const { messagesList } = props;
-
+  const { nameFriend } = useAuth();
   const divRef = useRef<null | HTMLDivElement>(null)
   useEffect(() => {
-    console.log('1')
     divRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messagesList])
-
   return (
     < Container>
       <div
@@ -29,6 +28,9 @@ function Chat(props: ChatProps) {
           justifyContent={"space-between"}
           rowGap={"15px"}
         >
+          <h2>
+            Chat with {nameFriend}
+          </h2>
           <div
             style={
               {
@@ -42,7 +44,7 @@ function Chat(props: ChatProps) {
               }
             }
           >
-            {messagesList.map((value) => <Message value={value} />)}
+            {messagesList.map((value) => <Message key={value.createAt.nanoseconds} value={value} />)}
             <div ref={divRef} />
           </div>
           <CreateMessage />

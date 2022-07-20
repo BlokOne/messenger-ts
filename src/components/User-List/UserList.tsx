@@ -9,7 +9,8 @@ import { isatty } from "tty";
 import { Navigate } from "react-router-dom";
 import { AppRoute } from "../../const";
 
-const q = query(collection(db, "Users"), orderBy("name"));
+
+const q = query(collection(db, "Users"), orderBy("secondName"));
 let users: any = [];
 const unsubscribe = onSnapshot(q, (querySnapshot) => {
   const newUsers: any = [];
@@ -31,6 +32,24 @@ function UserList() {
   const [navChat, setNavChat] = useState(false);
   const { isAuth, email } = useAuth();
   const [usersList, setUsersList] = useState<any[]>([]);
+  const [sortKey, setSortKey] = useState<string>('');
+
+
+  useEffect(() => {
+    if (sortKey === "") {
+      setUsersList(users)
+    }
+    else {
+      let sortUsers: any[] = [];
+      users.filter((user: any) => {
+        const fullName = user.firstName + " " + user.secondName;
+        if (fullName.indexOf(sortKey) > -1) {
+          sortUsers.push(user)
+        }
+        setUsersList(sortUsers)
+      })
+    }
+  }, [sortKey])
   useEffect(() => {
     setUsersList(users)
   }, [users])
@@ -53,14 +72,16 @@ function UserList() {
               </h1>
               <TextField
                 label="UserName"
-                variant="outlined" />
+                variant="outlined"
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value)} />
               <div
                 className="users-list"
               >
                 {
                   usersList.map((user) => {
-                    if (email !== user.name) {
-                      return <User key={user.id} name={user.name} userId={user.id} setNavChat={setNavChat} />
+                    if (email !== user.email) {
+                      return <User key={user.id} firstName={user.firstName} secondName={user.secondName} userId={user.id} setNavChat={setNavChat} />
                     }
                   })
                 }

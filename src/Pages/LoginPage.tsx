@@ -7,7 +7,8 @@ function LoginPage() {
     <div className="page">
       <Login />
       <p className="page__link">
-        <Link to={AppRoute.registration}>Registration</Link>
+        No account?   <br />
+        <Link to={AppRoute.registration}>Create it!</Link>
       </p>
     </div>
   )
