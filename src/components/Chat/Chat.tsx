@@ -9,7 +9,7 @@ import Message from "../Message/Message";
 function sendNotification(title: string, options: any) {
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
     if (!("Notification" in window)) {
-      alert('Ваш браузер не поддерживает HTML Notifications, его необходимо обновить.');
+
     }
     else if (Notification.permission === "granted") {
       var notification = new Notification(title, options);
