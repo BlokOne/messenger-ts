@@ -1,6 +1,6 @@
 Messenger
 
-blokone.github.io/messenger-ts/
+https://blokone.github.io/messenger-ts/
 
 Полноценный Messenger написанные на TypeSripte с использованием библиотеки React в связки с Redux, а так же Material UI.
 
