@@ -23,7 +23,7 @@ function useUpdate(ChatId: any) {
       });
       setNewMessages(messages);
     })
-  }, []);
+  }, [ChatId]);
   return newMessages;
 }
 
@@ -36,7 +36,7 @@ function ChatPage(): JSX.Element {
     dispatch(setHeaderChat({
       HeaderChat: nameFriend
     }))
-  }, [ChatID])
+  }, [ChatID, dispatch, nameFriend])
   return (
     <>
       {

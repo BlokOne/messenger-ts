@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { AppRoute } from "../../const";
+import { useState } from "react";
+import Loader from "../Loader/Loader";
+import ModalError from "../ModalError/ModalError";
 
 type RegisterProps = {
   firstName: string;
@@ -25,9 +28,13 @@ function addUser(email: string | null, id: string | null, firstName: string, sec
 }
 
 function SingUp(): JSX.Element {
+  const [modal, setModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const dispatch = useDispatch();
   const navigate = useNavigate()
   function handleRegister(data: RegisterProps) {
+    setLoading(true)
     const { firstName, secondName, email, password } = data;
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
@@ -41,16 +48,25 @@ function SingUp(): JSX.Element {
         ))
         addUser(user.email, user.uid, firstName, secondName)
         navigate(`${AppRoute.chat}`)
+        setErrorMessage(null)
+      }).catch((error) => {
+        setErrorMessage(error);
+        setModal(true)
+      }).finally(() => {
+        setLoading(false)
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        console.log(errorCode)
-        const errorMessage = error.message;
-        console.log(errorMessage)
-      });
+  }
+  if (loading) {
+    return (<Loader />)
   }
   return (
-    <Form title={"Registration"} handleClick={handleRegister} login={false} />
+    <>
+      {
+        modal ? <ModalError open={modal} setOpen={setModal} error={errorMessage} /> : null
+      }
+      <Form title={"Registration"} handleClick={handleRegister} login={false} />
+
+    </>
   )
 }
 

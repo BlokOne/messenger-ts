@@ -22,11 +22,11 @@ function User(props: UserProps): JSX.Element {
   const { id } = useAuth();
   const [IdChat, setIdChat] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const [NameFriend] = useState(firstName)
 
 
 
-  const createChat = async function (myId: string, userId: string): Promise<any> {
+
+  const createChat = async function (myId: string, userId: string): Promise<void> {
     const arrayID = [userId, myId];
     arrayID.sort();
     const id: string = `${arrayID[0]}${arrayID[1]}`;
@@ -51,11 +51,11 @@ function User(props: UserProps): JSX.Element {
         ChatID: IdChat,
       }))
       dispatch(setFriendName({
-        nameFriend: NameFriend
+        nameFriend: firstName
       }))
       setNavChat(true)
     }
-  }, [IdChat])
+  }, [IdChat, dispatch, firstName, setNavChat])
 
   return (
 

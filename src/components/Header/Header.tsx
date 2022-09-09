@@ -34,6 +34,8 @@ export default memo(function Header(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [nameHead, setNameHead] = useState<string>(`${secondName} ${firstName}`);
+  const [colorLink, setColorLink] = useState("white")
+  const [colorLinkMobile, setColorLinkMobile] = useState("#0000ee")
   const dispatch = useDispatch()
   useEffect(() => {
     if (HeaderChat !== "") {
@@ -41,11 +43,20 @@ export default memo(function Header(props: Props) {
     } else {
       setNameHead(`${secondName} ${firstName}`)
     }
-  }, [HeaderChat])
+  }, [HeaderChat, nameFriend, secondName, firstName])
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  useEffect(() => {
+    if (!ChatID) {
+      setColorLink('#ffffff78')
+      setColorLinkMobile('#000000')
+    } else {
+      setColorLink('white')
+      setColorLinkMobile("#0000ee")
+    }
+  }, [ChatID])
 
   function exit() {
     getAuth().signOut().then(function () {
@@ -68,21 +79,30 @@ export default memo(function Header(props: Props) {
       </Typography>
       <Divider />
       <List>
-        <Link to={AppRoute.userList}>
-          <ListItem disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary='Users' />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link to={AppRoute.chat} >
-          <ListItem disablePadding
-            disabled={!ChatID}>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary='Chat' />
-            </ListItemButton>
-          </ListItem>
-        </Link>
+        <Button>
+          <Link to={AppRoute.userList}>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <ListItemText primary='Users' />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+        </Button>
+        <Button
+          disabled={!ChatID}
+        >
+          <Link to={AppRoute.chat} >
+            <ListItem disablePadding
+              disabled={!ChatID}>
+              <ListItemButton sx={{ textAlign: 'center' }}
+                style={{ color: `${colorLinkMobile}` }}>
+                <ListItemText primary='Chat' /
+                >
+              </ListItemButton>
+            </ListItem>
+          </Link>
+        </Button>
+
         <Button
           variant="text"
           style={{ color: "black" }}
@@ -129,13 +149,13 @@ export default memo(function Header(props: Props) {
                 Users
               </Button>
             </Link>
-            <Link to={AppRoute.chat} >
-              <Button sx={{ color: '#fff' }}
-                disabled={!ChatID}
-              >
-                Chat
-              </Button>
-            </Link>
+            <Button
+              disabled={!ChatID}
+            >
+              <Link to={AppRoute.chat}
+                style={{ color: `${colorLink}` }}
+              >Chat room </Link>
+            </Button>
           </Box>
           <Button
             variant="text"

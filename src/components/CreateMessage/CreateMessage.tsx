@@ -1,44 +1,41 @@
 import { Button, Grid, TextField } from "@mui/material";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "../../firebase";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
-
+import SendIcon from '@mui/icons-material/Send';
+import { sendMessage } from "../../util/sendMessage";
 
 
 function CreateMessage() {
   const [value, setValue] = useState<string>("");
   const { email, ChatID } = useAuth();
-  const sendMessage = () => {
-    if (value !== '') {
-      let messageText = value.trimStart();
-      const newMassage = doc(db, `${ChatID}`, `${Date.now()}${email}`);
-      setDoc(newMassage, {
-        name: `${email}`,
-        text: messageText,
-        createAt: serverTimestamp(),
-      }, { merge: true });
+  const sendMessageCallback = useCallback(
+    () => {
+      sendMessage(value, email, ChatID);
       setValue("")
-    }
-  }
+    },
+    [value, email, ChatID]
+  )
+
   useEffect(() => {
-    function onKeypress(e: any) {
+    function onKeypress(e: KeyboardEvent) {
       if (value && e.code === "Enter") {
         if (e.ctrlKey) {
           setValue(value + "\r\n")
         }
         else {
-          sendMessage()
+          sendMessageCallback()
         }
       }
     }
-
     document.addEventListener('keypress', onKeypress);
-
     return () => {
       document.removeEventListener('keypress', onKeypress);
     };
   });
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  };
 
   return (
     <Grid container
@@ -55,7 +52,7 @@ function CreateMessage() {
             multiline
             fullWidth
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={onChange}
             variant={'standard'}
             maxRows={'3'}
             InputProps={{
@@ -65,12 +62,12 @@ function CreateMessage() {
           />
         </div>
         <Button
-          variant="contained"
+          variant="text"
+          endIcon={<SendIcon />}
           className="chat__button"
-          onClick={sendMessage}
+          onClick={sendMessageCallback}
           style={{ height: "100%" }}
         >
-          Отправить
         </Button>
       </div>
 

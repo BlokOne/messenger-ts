@@ -5,19 +5,27 @@
   flex-direction: column;
   height: 60vh;
   overflow-y: auto;
-  border: 1px solid gray;
-  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 5px;
   padding: 10px;
   box-sizing: border-box;
   &__link {
     padding-right: 15px;
     justify-content: space-between;
-    background-color: #3318df99;
+    background-color: #4562aa;
     border-radius: 25px;
-    border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
 
     display: flex;
     align-items: center;
+  }
+  &__wrapper {
+    margin-inline: auto;
+    height: 100%;
+    margin-top: 70px;
+    @media (min-width: 769px) {
+      max-width: 760px;
+    }
   }
 }

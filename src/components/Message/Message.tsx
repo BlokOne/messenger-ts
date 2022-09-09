@@ -1,14 +1,14 @@
-import { Avatar, Grid } from "@mui/material"
+
 import { useAuth } from "../../hooks/use-auth";
 
 type MessageProps = {
   value: {
-    createAt: {
-      nanoseconds: number,
-      seconds: number
+    createAt?: {
+      seconds: number,
+      nanoSeconds: number,
     },
     name: string,
-    text: string,
+    text: string
   }
   time: number | string
 }
@@ -19,7 +19,7 @@ function Message({ value, time }: MessageProps) {
     timeSend = new Date(time * 1000).toLocaleString().slice(12, 17)
   }
   const { name } = value
-  const { email, nameFriend, firstName } = useAuth();
+  const { email } = useAuth();
   return (
     <div
       style={{
@@ -27,7 +27,7 @@ function Message({ value, time }: MessageProps) {
         minWidth: "20%",
         margin: 10,
         marginLeft: email === name ? 'auto' : "10px",
-        backgroundColor: email === name ? '#7171ef' : "#7d7d8e",
+        backgroundColor: email === name ? "#7d7d8e" : 'rgb(101 119 163)',
         width: 'fit-content',
         border: "1px solid grey",
         borderRadius: "5px",
@@ -36,23 +36,6 @@ function Message({ value, time }: MessageProps) {
         wordWrap: "break-word"
       }}
     >
-      {/* <Grid container
-        alignItems={'center'}
-        columnGap={'5px'}
-        style={{
-          marginBottom: 10,
-        }}
-      >
-        <Avatar
-          style={{
-            height: 30,
-            width: 30
-          }}
-        />
-        <div>{email === name ?
-          `${firstName}` :
-          `${nameFriend}`}</div>
-      </Grid> */}
       <div
         style={{
           marginBottom: "10px",

@@ -3,10 +3,11 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Form from "../Form/Form";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../../store/slices/userSlice";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase";
 import { AppRoute } from "../../const";
-
+import { useState, useEffect } from "react";
+import Loader from "../Loader/Loader";
+import { getUserInfo } from "../../util/getUserInfo";
+import ModalError from "../ModalError/ModalError";
 
 type RegisterProps = {
   firstName: string;
@@ -15,40 +16,17 @@ type RegisterProps = {
   password: string
 };
 
-async function getUserInfo(data: any) {
-
-  const docRef = doc(db, "Users", `${data.email}`);
-  const docSnap = await getDoc(docRef);
-  let userInfo = await docSnap.data();
-  return userInfo
-
-}
-
 function Login(): JSX.Element {
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  getAuth().onAuthStateChanged(function (user) {
-    if (user) {
-      getUserInfo(user).then((userInfo: any) => {
-        const { firstName, secondName } = userInfo;
-        dispatch(setUser({
-          email: user.email,
-          id: user.uid,
-          firstName: firstName,
-          secondName: secondName,
-        }))
-        navigate(`${AppRoute.chat}`)
-      })
-    }
-  });
-
-  function handleLogin(data: RegisterProps) {
-    const { email, password } = data;
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then(({ user }) => {
-        getUserInfo(user).then((userInfo: any) => {
+  useEffect(() => {
+    getAuth().onAuthStateChanged(function (user) {
+      if (user) {
+        getUserInfo(user).then((userInfo: any): void => {
           const { firstName, secondName } = userInfo;
           dispatch(setUser({
             email: user.email,
@@ -56,14 +34,53 @@ function Login(): JSX.Element {
             firstName: firstName,
             secondName: secondName,
           }))
-          navigate(`${AppRoute.chat}`)
+          navigate(`${AppRoute.userList}`)
+          setLoading(false)
+        })
+      } else {
+        setLoading(false)
+      }
+    });
+  }, [dispatch, navigate])
+
+  function handleLogin(data: RegisterProps): void {
+    setLoading(true)
+    const { email, password } = data;
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(({ user }) => {
+        getUserInfo(user).then((userInfo: any): void => {
+          const { firstName, secondName } = userInfo;
+          dispatch(setUser({
+            email: user.email,
+            id: user.uid,
+            firstName: firstName,
+            secondName: secondName,
+          }))
+          navigate(`${AppRoute.userList}`)
+          setErrorMessage(null)
         })
       })
-      .catch(console.log)
+      .catch((error) => {
+        setErrorMessage(error);
+        setModal(true)
+      }).finally(() => {
+        setLoading(false)
+      })
   }
-  return (
-    <Form title={"Sign in"} handleClick={handleLogin} login={true} />
-  )
+  if (!loading) {
+    return (
+      <>
+        {
+          modal ? <ModalError open={modal} setOpen={setModal} error={errorMessage} /> : null
+        }
+        <Form title={"Sign in"} handleClick={handleLogin} login={true} />
+
+      </>
+    )
+  }
+  return (<Loader />)
+
 }
 
 export default Login
